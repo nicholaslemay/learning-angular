@@ -1,9 +1,15 @@
-import { TestBed } from '@angular/core/testing';
+import {ComponentFixture, TestBed} from '@angular/core/testing';
 import { RouterTestingModule } from '@angular/router/testing';
 import { AppComponent } from './app.component';
+import {Title} from "@angular/platform-browser";
 
 describe('AppComponent', () => {
+  let titleServiceSpy: jasmine.SpyObj<Title>;
+  let fixture: ComponentFixture<AppComponent>;
+
   beforeEach(async () => {
+    titleServiceSpy = jasmine.createSpyObj<Title>('TitleSpy',['setTitle']);
+
     await TestBed.configureTestingModule({
       imports: [
         RouterTestingModule
@@ -11,25 +17,27 @@ describe('AppComponent', () => {
       declarations: [
         AppComponent
       ],
+      providers: [{provide:Title, useValue: titleServiceSpy}]
     }).compileComponents();
-  });
 
-  it('should create the app', () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app).toBeTruthy();
-  });
-
-  it(`should have as title 'learning-agular'`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app.title).toEqual('learning-agular');
-  });
-
-  it('should render title', () => {
-    const fixture = TestBed.createComponent(AppComponent);
+    fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
-    const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('.content span')?.textContent).toContain('learning-agular app is running!');
   });
+
+  describe('After init', ()=>{
+    let compiled: HTMLElement;
+
+    beforeEach(async () => {
+      compiled = fixture.nativeElement as HTMLElement;
+    });
+
+    it('should render page title', () => {
+      expect(compiled.querySelector('h1')?.textContent).toContain("Hello World. I'm learning angular");
+    });
+
+    it('should set browser title', () => {
+      expect(titleServiceSpy.setTitle).toHaveBeenCalledOnceWith('Hello World!');
+    });
+  });
+
 });
