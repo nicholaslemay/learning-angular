@@ -41,3 +41,29 @@
 //
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite("visit", (originalFn, url, options) => { ... })
+declare namespace Cypress {
+  interface Chainable<Subject> {
+    createUser(name: string, email: string, gender: string): Chainable<any>
+  }
+}
+
+
+Cypress.Commands.add("createUser", (name, email, gender) => {
+  cy.visit('/users/new');
+
+  cy.intercept('POST', 'https://gorest.co.in/public/v2/users', (req => {
+    req.reply(201,
+      {
+        "id": 21136,
+        "name": req.body.name,
+        "email": req.body.email,
+        "gender": req.body.gender,
+        "status": req.body.status
+      });
+  })).as('lastCreatedUser');
+
+  cy.get('#name').type(name);
+  cy.get('#email').type(email);
+  cy.get('#gender').select(gender);
+  cy.get('button[type="submit"]').click();
+})
