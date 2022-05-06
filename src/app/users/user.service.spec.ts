@@ -1,16 +1,18 @@
-import {HttpClient} from "@angular/common/http";
+import {HttpClient, HttpClientModule} from "@angular/common/http";
 import {UserService} from "./user.service";
 import {User} from "./user";
 import {of} from "rxjs";
 import {NewUser} from "./newUser";
+import {GoRestConfig} from "../shared/goRestConfig";
 
 let httpClientSpy: jasmine.SpyObj<HttpClient>;
 let userService: UserService;
 
 describe('UserService', () => {
+
   beforeEach(() => {
     httpClientSpy = jasmine.createSpyObj('HttpClient', ['post']);
-    userService = new UserService(httpClientSpy);
+    userService = new UserService(httpClientSpy, new GoRestConfig());
   });
 
   it('should return expected heroes (HttpClient called once)', () => {

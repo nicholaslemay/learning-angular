@@ -1,3 +1,8 @@
+import {Injectable} from "@angular/core";
+
+@Injectable()
 export class GoRestConfig {
-    public static readonly API_TOKEN = '<insert your own api topen here>';
+    public API_TOKEN = 'insert your own token';
+    public BASE_URL = 'https://gorest.co.in';
+
 }

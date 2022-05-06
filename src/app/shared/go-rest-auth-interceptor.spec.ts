@@ -23,7 +23,7 @@ describe('GoRestInterceptor', () => {
   it('adds appropriate headers to requests to gorest', () => {
     const interceptor = new GoRestAuthInterceptor();
     interceptor.intercept(new HttpRequest('GET', 'http://gorest.co.in/banana'),next).subscribe();
-    expect(lastReceivedHttpRequest.headers?.get('Authorization')).toBe(`Bearer ${GoRestConfig.API_TOKEN}`);
+    expect(lastReceivedHttpRequest.headers?.get('Authorization')).toBe(`Bearer ${new GoRestConfig().API_TOKEN}`);
     expect(lastReceivedHttpRequest.headers?.get('Content-Type')).toBe('application/json');
   });
 

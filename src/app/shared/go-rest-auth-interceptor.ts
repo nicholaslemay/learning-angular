@@ -9,7 +9,7 @@ export class GoRestAuthInterceptor implements HttpInterceptor {
         if (req.url.toLowerCase().includes('gorest.co.in')) {
             return next.handle(req.clone({
                 headers: req.headers
-                    .set('Authorization', `Bearer ${GoRestConfig.API_TOKEN}`)
+                    .set('Authorization', `Bearer ${new GoRestConfig().API_TOKEN}`)
                     .set('Content-Type', 'application/json')
             }));
         }

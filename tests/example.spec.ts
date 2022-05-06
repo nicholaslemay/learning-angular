@@ -9,7 +9,7 @@ test.describe('Registration', () => {
     await expect(page.locator('h1')).toHaveText('Registration');
 
     let receivedCall;
-    let receivedRequest;
+    let receivedRequest = {} as Request;
     await page.route('**/v2/users**', route => {
       // @ts-ignore
       receivedCall = route.request().postDataJSON();
@@ -24,8 +24,7 @@ test.describe('Registration', () => {
     await page.locator('button[type="submit"]').click();
 
     expect(receivedCall).toEqual({name: "tony", email: "tony@hotmail.com", gender: "female", status: "active"});
-    // @ts-ignore
-    expect(await receivedRequest.headerValue('authorization')).toEqual(`Bearer ${GoRestConfig.API_TOKEN}`);
+    expect(await receivedRequest.headerValue('authorization')).toEqual(`Bearer ${new GoRestConfig().API_TOKEN}`);
   });
 
 });

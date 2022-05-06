@@ -14,7 +14,7 @@ describe('Registration', () => {
 
     // @ts-ignore
     cy.get('@lastCreatedUser').then(({request: request}) => {
-      expect(request.headers['authorization']).to.eq(`Bearer ${GoRestConfig.API_TOKEN}`)
+      expect(request.headers['authorization']).to.eq(`Bearer ${new GoRestConfig().API_TOKEN}`)
     })
 
   });
