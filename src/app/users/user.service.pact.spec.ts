@@ -13,14 +13,13 @@ describe('UserService pact', () => {
   let provider : PactWeb;
 
   beforeAll(async ()=>{
-    provider = new PactWeb({port: 1234});
+    provider = new PactWeb({port: 1234, pactfileWriteMode: "overwrite"});
     // required for slower Travis CI environment
     // setTimeout(function() {
     //   // Required if run with `singleRun: false`
     //   done();
     // }, 500);
 
-    await provider.removeInteractions();
     TestBed.configureTestingModule({
       imports: [
         HttpClientModule
@@ -37,9 +36,13 @@ describe('UserService pact', () => {
     await provider.finalize()
   })
 
+  beforeEach(async ()=>{
+    await provider.removeInteractions();
+  })
+
   describe('creating a valid user',  () =>{
     let userReturnedFromService = {id: 33} as User;
-    const newUserToCreate = new NewUser('tony', 'tony@gmail.com', 'male');
+    const newUserToCreate = new NewUser('tony', 'tonye@gmail.com', 'male');
 
     beforeEach( async ()=>{
      await provider.addInteraction({
@@ -68,6 +71,40 @@ describe('UserService pact', () => {
         },
         error: (e)=>{
           fail(e);
+          done();
+        }
+      })
+    });
+  });
+
+  describe('creating an invalid user',  () =>{
+    beforeEach( async ()=>{
+      await provider.addInteraction({
+        state: `request is missing fields`,
+        uponReceiving: 'an invalid POST request to create a user',
+        withRequest: {
+          method: 'POST',
+          path: '/public/v2/users',
+          body: {
+          },
+          headers: {
+            'Content-Type': 'application/json'
+          }
+        },
+        willRespondWith: {
+          status: 400
+        }
+      })
+    });
+
+    it('returns the created user',  (done) => {
+      userService.createUser({} as NewUser).subscribe({
+        next: (u)=>{
+          fail('Expected an error');
+          done();
+        },
+        error: (e)=>{
+          expect(e.status).toBe(400);
           done();
         }
       })

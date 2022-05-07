@@ -24,7 +24,8 @@ module.exports = function (config) {
       logLevel: 'DEBUG',
       log: path.resolve(process.cwd(), 'pacts/logs', 'pact.log'),
       dir: path.resolve(process.cwd(), 'pacts'),
-      pactfileWriteMode:"overwrite"
+      pactfileWriteMode:"overwrite",
+
     }],
     client: {
       jasmine: {
